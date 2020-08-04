@@ -42,14 +42,9 @@ const buzz$: Observable<string> = numbers$.pipe(
 const fizzBuzz$ = zip<[string, string, number]>(
      fizz$, buzz$, numbers$
 ).pipe(
-    map( arr => {
-        if ( typeof arr[0] == 'string'  || typeof arr[1] == 'string' ) {
-            return arr.slice(0, -1).join('')
-        }
-        else {
-            return arr.join('')
-        }
-    })
+    map( arr => (arr.slice(0,2).some(Boolean)) ?
+        arr.slice(0, -1).join('') : arr.join((''))
+    )
 )
 
 export default fizzBuzz$;
