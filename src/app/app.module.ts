@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import {FizzbuzzService} from "./services/fizzbuzz.service";
+
 
 @NgModule({
   declarations: [
@@ -12,7 +14,7 @@ import { AppComponent } from './app.component';
     BrowserModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [FizzbuzzService],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}
