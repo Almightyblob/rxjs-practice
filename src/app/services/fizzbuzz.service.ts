@@ -28,14 +28,5 @@ export class FizzbuzzService {
         ).subscribe(fb => this.fizzStream$.next(fb))
     }
 
-    // checkTrue(arr) {
-    //     if ((arr[0] === arr[1] && typeof arr[0] == 'string')) {
-    //         return true;
-    //     } else if ((arr[0] !== arr[1] && typeof arr[0] == 'string')) {
-    //         return false;
-    //     } else {
-    //         return
-    //     }
-    // }
 }
 

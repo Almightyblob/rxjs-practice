@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 
 import {FizzbuzzService} from "./services/fizzbuzz.service";
-import {fromEvent, Observable, of} from "rxjs";
+import {fromEvent, Observable, of, Subject} from "rxjs";
 import {mapTo, merge, switchMap, distinctUntilChanged, tap} from "rxjs/operators";
 @Component({
   selector: 'app-root',
@@ -12,7 +12,7 @@ export class AppComponent implements OnInit, AfterViewInit{
   title = 'fizzbuzz';
 
   fizzBuzz$: Observable<string | number>;
-  result$: Observable<boolean>;
+  result$ = new Subject()
   points$: Observable<number>;
   fails$: Observable<number>;
 
@@ -23,11 +23,10 @@ export class AppComponent implements OnInit, AfterViewInit{
   checkTrue(value) {
     const fizzValue = this.fizzbuzzService.fizzStream$.getValue()
         if ((value == fizzValue && typeof fizzValue == 'string')) {
-          console.log('correct')
-            return true;
+            this.result$.next(true)
         } else if ((value !== fizzValue && typeof fizzValue == 'string')) {
           console.log('wrong')
-            return false;
+            this.result$.next(false)
         } else {
             return
         }
@@ -43,20 +42,20 @@ export class AppComponent implements OnInit, AfterViewInit{
 
   ngAfterViewInit() {
     console.log(this.fizzButton)
-    const fizz = fromEvent(this.fizzButton.nativeElement, 'click')
+    const fizzBet$ = fromEvent(this.fizzButton.nativeElement, 'click')
 
-    const buzz = fromEvent(this.buzzButton.nativeElement, 'click')
+    const buzzBet$ = fromEvent(this.buzzButton.nativeElement, 'click')
 
-    const fizzBuzz = fromEvent(this.fizzBuzzButton.nativeElement, 'click')
+    const fizzBuzzBet$ = fromEvent(this.fizzBuzzButton.nativeElement, 'click')
 
-    const userInput = of().pipe(merge(
-        fizz.pipe(mapTo('Fizz')),
-        buzz.pipe(mapTo('Buzz')),
-        fizzBuzz.pipe(mapTo('FizzBuzz'))),
-        distinctUntilChanged()
+    const userInput$ = of().pipe(merge(
+        fizzBet$.pipe(mapTo('Fizz')),
+        buzzBet$.pipe(mapTo('Buzz')),
+        fizzBuzzBet$.pipe(mapTo('FizzBuzz'))),
+        distinctUntilChanged(),
     )
 
-    const compare = this.fizzbuzzService.fizzBuzz$.pipe(switchMap(x => userInput),
+    const inputPerInterval$ = this.fizzbuzzService.fizzBuzz$.pipe(switchMap(x => userInput$),
         tap(value => this.checkTrue(value))).subscribe(console.log)
   }
 
