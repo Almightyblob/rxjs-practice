@@ -1,5 +1,5 @@
-import {BehaviorSubject, combineLatest, interval, Observable, of, Subject, zip} from "rxjs";
-import {debounce, debounceTime, map, take, tap, throttle, throttleTime} from "rxjs/operators";
+import {BehaviorSubject, combineLatest, interval, Observable, zip} from "rxjs";
+import {map, tap} from "rxjs/operators";
 
 export class FizzbuzzService {
 
