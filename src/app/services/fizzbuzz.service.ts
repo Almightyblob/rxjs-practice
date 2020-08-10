@@ -1,18 +1,21 @@
 import {BehaviorSubject, combineLatest, interval, Observable, of, Subject, zip} from "rxjs";
-import {concatMap, map, take, tap} from "rxjs/operators";
+import {debounce, debounceTime, map, take, tap, throttle, throttleTime} from "rxjs/operators";
 
 export class FizzbuzzService {
 
     fizzStream$ = new BehaviorSubject<string | number>('');
     fizzBuzz$ = this.fizzStream$.asObservable();
+    bet$ = new BehaviorSubject<string>('')
+    comparedValues$ = new BehaviorSubject<[string | number, string]>([null, null])
     result$ = new BehaviorSubject<boolean>(null);
     points$ = new BehaviorSubject<number>(0)
     points = 0;
-    fails$ = 0;
+    fails$ = new BehaviorSubject<number>(0)
+    fails = 0;
 
     numbers$: Observable<number> = interval(2000).pipe(
         map(n => n += 1),
-        tap(n => this.result$.next(false))
+        tap(n => this.result$.next(null))
     );
 
     fizz$: Observable<string> = this.numbers$.pipe(
@@ -32,23 +35,26 @@ export class FizzbuzzService {
     ).subscribe( fb => this.fizzStream$.next(fb))
      }
 
+    betVScurrent$ = combineLatest([this.fizzBuzz$, this.bet$])
+        .subscribe( result => this.comparedValues$.next(result))
+
      checkTrue(arr) {
-        if (arr[0] == arr[1]) {
-            this.points++
-            console.log("CHECK")
-            this.points$.next(this.points)
-            return true
+        if ((arr[0] === arr[1] && typeof arr[0] == 'string')) {
+            this.points++;
+            this.points$.next(this.points);
+            return true;
+        } else if ((arr[0] !== arr[1] && typeof arr[0] == 'string')){
+            this.fails++;
+            this.fails$.next(this.fails);
+            return false;
         } else {
-            return false
+            return
         }
      }
 
      checkFizz(fizzOrBuzz) {
-        const bet = of(fizzOrBuzz)
-        combineLatest([this.fizzBuzz$, bet]).pipe(
-            take(1)
-        ).subscribe( result => this.result$.next(this.checkTrue(result)))
-
-
+        this.bet$.next(fizzOrBuzz)
+         console.log(this.comparedValues$)
+         this.checkTrue(this.comparedValues$.getValue())
      }
 }

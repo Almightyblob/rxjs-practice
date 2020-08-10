@@ -1,17 +1,38 @@
 
 <div *ngIf="(fizzbuzz$ | async) as fizzBuzz">
-    <p *ngIf="isNumber(fizzBuzz) || (result$ | async) ; else NA">{{fizzBuzz}}</p>
+    <p *ngIf="isNumber(fizzBuzz) || (result$ | async) == true ; else NA">
+        {{fizzBuzz}}
+    </p>
     <ng-template #NA>
-        <p>??</p>
+        <p>
+            ??
+        </p>
     </ng-template>
 </div>
-
-
-<button (click)="checkFizz()">FIZZ</button>
-<button (click)="checkBuzz()">BUZZ</button>
 <div>
-    <button (click)="checkFizzBuzz()">FIZZBUZZ!!!</button>
+    <button (click)="checkFizz()">
+        FIZZ
+    </button>
+    <button (click)="checkBuzz()">
+        BUZZ
+    </button>
 </div>
-
-<p>Result: {{(result$ | async)}}</p>
-<p>Points: {{points$ | async}}</p>
+<div>
+    <button (click)="checkFizzBuzz()">
+        FIZZBUZZ!!!
+    </button>
+</div>
+<p>
+    Points: {{points$ | async}}
+</p>
+<p>
+    Fails: {{fails$ | async}} / 3
+</p>
+<div>
+    <p *ngIf="(result$ | async) == true">
+        GOOD!!!
+    </p>
+    <p *ngIf="(result$ | async) == false">
+        WROOOOOONG!
+    </p>
+</div>

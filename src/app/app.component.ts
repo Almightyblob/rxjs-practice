@@ -13,21 +13,23 @@ export class AppComponent implements OnInit{
   fizzbuzz$: Observable<string | number>;
   result$: Observable<boolean>;
   points$: Observable<number>;
+  fails$: Observable<number>;
 
   constructor(private fizzbuzzService: FizzbuzzService) {
   }
 
   ngOnInit() {
-    this.fizzbuzz$ = this.fizzbuzzService.fizzBuzz$
-    this.result$ = this.fizzbuzzService.result$
-    this.points$ = this.fizzbuzzService.points$
-    this.fizzbuzzService.fizzBuzz()
+    this.fizzbuzz$ = this.fizzbuzzService.fizzBuzz$;
+    this.result$ = this.fizzbuzzService.result$;
+    this.points$ = this.fizzbuzzService.points$;
+    this.fails$ = this.fizzbuzzService.fails$;
+    this.fizzbuzzService.fizzBuzz();
   }
 
   isNumber(val): boolean { return typeof val === 'number'; }
 
   checkFizz(){
-    this.fizzbuzzService.checkFizz('Fizz')
+    this.fizzbuzzService.checkFizz('Fizz');
   }
 
   checkBuzz(){
