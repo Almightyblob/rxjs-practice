@@ -1,5 +1,5 @@
 
-<div *ngIf="(fizzbuzz$ | async) as fizzBuzz">
+<div *ngIf="(fizzBuzz$ | async) as fizzBuzz">
     <p *ngIf="isNumber(fizzBuzz) || (result$ | async) == true ; else NA">
         {{fizzBuzz}}
     </p>
@@ -10,15 +10,15 @@
     </ng-template>
 </div>
 <div>
-    <button (click)="checkFizz()">
+    <button #fizz>
         FIZZ
     </button>
-    <button (click)="checkBuzz()">
+    <button #buzz>
         BUZZ
     </button>
 </div>
 <div>
-    <button (click)="checkFizzBuzz()">
+    <button #fizzBuzz>
         FIZZBUZZ!!!
     </button>
 </div>
