@@ -1,8 +1,21 @@
 import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 
 import {FizzbuzzService} from "./services/fizzbuzz.service";
-import {fromEvent, Observable, of, Subject} from "rxjs";
-import {mapTo, merge, switchMap, distinctUntilChanged, tap} from "rxjs/operators";
+import {combineLatest, fromEvent, interval, Observable, of, Subject} from "rxjs";
+import {
+  mapTo,
+  merge,
+  switchMap,
+  distinctUntilChanged,
+  tap,
+  mergeMap,
+  map,
+  take,
+  share,
+  delay,
+  filter, scan
+} from "rxjs/operators";
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -12,7 +25,7 @@ export class AppComponent implements OnInit, AfterViewInit{
   title = 'fizzbuzz';
 
   fizzBuzz$: Observable<string | number>;
-  result$ = new Subject()
+  result$
   points$: Observable<number>;
   fails$: Observable<number>;
 
@@ -20,24 +33,12 @@ export class AppComponent implements OnInit, AfterViewInit{
   @ViewChild('buzz', {static: true}) buzzButton: ElementRef
   @ViewChild('fizzBuzz', {static: true}) fizzBuzzButton: ElementRef
 
-  checkTrue(value) {
-    const fizzValue = this.fizzbuzzService.fizzStream$.getValue()
-        if ((value == fizzValue && typeof fizzValue == 'string')) {
-            this.result$.next(true)
-        } else if ((value !== fizzValue && typeof fizzValue == 'string')) {
-          console.log('wrong')
-            this.result$.next(false)
-        } else {
-            return
-        }
-    }
-
   constructor(private fizzbuzzService: FizzbuzzService) {
   }
 
   ngOnInit() {
     this.fizzBuzz$ = this.fizzbuzzService.fizzBuzz$
-    this.fizzbuzzService.fizzBuzz();
+    this.fizzbuzzService.startFizz();
   }
 
   ngAfterViewInit() {
@@ -51,12 +52,40 @@ export class AppComponent implements OnInit, AfterViewInit{
     const userInput$ = of().pipe(merge(
         fizzBet$.pipe(mapTo('Fizz')),
         buzzBet$.pipe(mapTo('Buzz')),
-        fizzBuzzBet$.pipe(mapTo('FizzBuzz'))),
-        distinctUntilChanged(),
+        fizzBuzzBet$.pipe(mapTo('FizzBuzz')),
+        interval(1950).pipe(mapTo('None'))),
+        distinctUntilChanged()
     )
 
-    const inputPerInterval$ = this.fizzbuzzService.fizzBuzz$.pipe(switchMap(x => userInput$),
-        tap(value => this.checkTrue(value))).subscribe(console.log)
+    this.result$ = this.fizzBuzz$
+        .pipe(
+            switchMap(currentFizz => userInput$.pipe(
+                map( input => {
+                  if (typeof currentFizz == 'number' || input == 'None'){
+                    return null
+                  } else if (currentFizz == input) {
+                    return true
+                  } else if (currentFizz != input) {
+                    return false
+                  }
+                })
+            ))
+        )
+
+    const points:Observable<number> = this.result$.pipe(
+        filter(result => result === true),
+        mapTo(1)
+    )
+
+    const fails:Observable<number> = this.result$.pipe(
+        filter(result => result === false),
+        mapTo(1)
+    )
+
+    this.points$ = points.pipe(scan((acc, one) => acc + one, 0));
+    this.fails$ = fails.pipe(scan((acc, one) => acc + one, 0));
+
+
   }
 
   isNumber(val): boolean { return typeof val === 'number'; }
