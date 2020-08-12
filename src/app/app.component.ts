@@ -1,18 +1,13 @@
 import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 
 import {FizzbuzzService} from "./services/fizzbuzz.service";
-import {combineLatest, fromEvent, interval, Observable, of, Subject} from "rxjs";
+import {fromEvent, interval, Observable, of} from "rxjs";
 import {
   mapTo,
   merge,
   switchMap,
   distinctUntilChanged,
-  tap,
-  mergeMap,
   map,
-  take,
-  share,
-  delay,
   filter, scan
 } from "rxjs/operators";
 

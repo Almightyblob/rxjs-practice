@@ -1,5 +1,5 @@
-import {BehaviorSubject, interval, Observable, zip} from "rxjs";
-import {map, share} from "rxjs/operators";
+import {interval, Observable, zip} from "rxjs";
+import {map} from "rxjs/operators";
 
 export class FizzbuzzService {
 
