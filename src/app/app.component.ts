@@ -8,19 +8,21 @@ import {
   switchMap,
   distinctUntilChanged,
   map,
-  filter, scan
+  filter, scan, tap, share
 } from "rxjs/operators";
+
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
+
 export class AppComponent implements OnInit, AfterViewInit{
   title = 'fizzbuzz';
 
   fizzBuzz$: Observable<string | number>;
-  result$
+  result$: Observable<boolean>
   points$: Observable<number>;
   fails$: Observable<number>;
 
@@ -33,15 +35,12 @@ export class AppComponent implements OnInit, AfterViewInit{
 
   ngOnInit() {
     this.fizzBuzz$ = this.fizzbuzzService.fizzBuzz$
-    this.fizzbuzzService.startFizz();
   }
 
   ngAfterViewInit() {
     console.log(this.fizzButton)
     const fizzBet$ = fromEvent(this.fizzButton.nativeElement, 'click')
-
     const buzzBet$ = fromEvent(this.buzzButton.nativeElement, 'click')
-
     const fizzBuzzBet$ = fromEvent(this.fizzBuzzButton.nativeElement, 'click')
 
     const userInput$ = of().pipe(merge(
@@ -63,7 +62,8 @@ export class AppComponent implements OnInit, AfterViewInit{
                   } else if (currentFizz != input) {
                     return false
                   }
-                })
+                }),
+                share()
             ))
         )
 
@@ -78,9 +78,14 @@ export class AppComponent implements OnInit, AfterViewInit{
     )
 
     this.points$ = points.pipe(scan((acc, one) => acc + one, 0));
-    this.fails$ = fails.pipe(scan((acc, one) => acc + one, 0));
-
-
+    this.fails$ = fails.pipe(scan((acc, one) => acc + one, 0),
+        tap(x => {
+          if (x >= 3) {
+            alert('GAME OVER')
+          }
+        }
+        )
+    )
   }
 
   isNumber(val): boolean { return typeof val === 'number'; }

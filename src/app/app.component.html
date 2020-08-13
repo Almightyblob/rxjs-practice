@@ -1,38 +1,40 @@
+<div class="grid-container">
 
-<div *ngIf="(fizzBuzz$ | async) as fizzBuzz">
-    <p *ngIf="isNumber(fizzBuzz) || (result$ | async) == true ; else NA">
-        {{fizzBuzz}}
-    </p>
-    <ng-template #NA>
-        <p>
-            ??
+    <div *ngIf="(fizzBuzz$ | async) as fizzBuzz">
+        <p *ngIf="isNumber(fizzBuzz) || (result$ | async) == true ; else NA">
+            {{fizzBuzz}}
         </p>
-    </ng-template>
-</div>
-<div>
-    <button #fizz>
-        FIZZ
-    </button>
-    <button #buzz>
-        BUZZ
-    </button>
-</div>
-<div>
-    <button #fizzBuzz>
-        FIZZBUZZ!!!
-    </button>
-</div>
-<p>
-    Points: {{points$ | async}}
-</p>
-<p>
-    Fails: {{fails$ | async}} / 3
-</p>
-<div>
-    <p *ngIf="(result$ | async) == true">
-        GOOD!
+        <ng-template #NA>
+            <p>
+                ??
+            </p>
+        </ng-template>
+    </div>
+    <div>
+        <button #fizz>
+            FIZZ
+        </button>
+        <button #buzz>
+            BUZZ
+        </button>
+    </div>
+    <div>
+        <button #fizzBuzz>
+            FIZZBUZZ!!!
+        </button>
+    </div>
+    <p>
+        Points: {{points$ | async}}
     </p>
-    <p *ngIf="(result$ | async) == false">
-        WROOOOOONG!
+    <p>
+        Fails: {{fails$ | async}} / 3
     </p>
+    <div>
+        <p *ngIf="(result$ | async) == true">
+            GOOD!
+        </p>
+        <p *ngIf="(result$ | async) == false">
+            WRONG!
+        </p>
+    </div>
 </div>
