@@ -20,6 +20,7 @@ import {
 
 export class AppComponent implements OnInit, AfterViewInit{
   title = 'fizzbuzz';
+  gameOn = false
 
   fizzBuzz$: Observable<string | number>;
   result$: Observable<boolean>
@@ -47,7 +48,7 @@ export class AppComponent implements OnInit, AfterViewInit{
         fizzBet$.pipe(mapTo('Fizz')),
         buzzBet$.pipe(mapTo('Buzz')),
         fizzBuzzBet$.pipe(mapTo('FizzBuzz')),
-        interval(1950).pipe(mapTo('None'))),
+        interval(1990).pipe(mapTo('None'))),
         distinctUntilChanged()
     )
 
@@ -82,6 +83,7 @@ export class AppComponent implements OnInit, AfterViewInit{
         tap(x => {
           if (x >= 3) {
             alert('GAME OVER')
+            this.gameOn = false
           }
         }
         )
@@ -89,5 +91,9 @@ export class AppComponent implements OnInit, AfterViewInit{
   }
 
   isNumber(val): boolean { return typeof val === 'number'; }
+
+  startGame() {
+    this.gameOn = true;
+  }
 
 }
